@@ -15,9 +15,10 @@ my_list <- lapply(file_list, read_excel)
 # Generate a vector of the names of each dataframe in the generated list
 # Most of the names are displayed in the first row & first column of the dataframe
 
-
 df_names <- unlist(sapply(my_list, function(elem) elem[1, 1])) %>% tbl_df()
 
+names(my_list) <- df_names$value
+ 
 # OPEC Members' values of petroleum exports (m $)
 df_values <- my_list[[8]]
 setDT(df_values)
