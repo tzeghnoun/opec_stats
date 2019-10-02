@@ -36,8 +36,40 @@ dt_prices <- dt_prices[5:51
                        ][, lapply(.SD, as.numeric), .SDcols = 2:5, by = year
                          ][, lapply(.SD, round, 2), .SDcols = 2:5, by = year]
 
- 
-# OPEC Members' values of petroleum exports (m $)
+# Table 1.1: OPEC Members' facts and figures, 2017
+dt_facts <- as.data.table(my_list[[2]])
+# Extract variables name
+noms <- as.character(dt_facts[2])
+noms[1] <- 'variables' 
+names(dt_facts) <- noms
+# removing empty rows
+dt_facts <- dt_facts[3:23]
+# Melting the country variable
+dt_facts <- melt.data.table(dt_facts, id.vars = 'variables', measure.vars = 2:ncol(dt_facts), variable.name = 'country')
+# dcast the variable column
+dt_facts <- dcast.data.table(dt_facts, country ~ variables) 
+# Clean dt variables name
+names(dt_facts) <- names(dt_facts) %>% make_clean_names()
+dt_facts <- dt_facts[, lapply(.SD, as.numeric), .SDcols=2:ncol(dt_facts), by = country]
+
+
+
+# Table 1.2: OPEC Members' crude oil production allocations (1,000 b/d)
+dt_oil_prod <- as.data.table(my_list[[3]])
+
+# Table 2.1: OPEC Members' population (million inhabitants)
+dt_population <- as.data.table(my_list[[4]])
+
+# Table 2.2: OPEC Members' GDP at current market prices (m $)
+dgp_current_price <- as.data.table(my_list[[5]])
+
+# Table 2.3: OPEC Members real GDP growth rates PPP based weights (%)
+gdp_growth <- as.data.table(my_list[[6]])
+
+# Table 2.4: OPEC Members' values of exports (m $)
+dt_values_exp <- as.data.table(my_list[[7]])
+
+# Table 2.5:OPEC Members' values of petroleum exports (m $)
 dt_values <- as.data.table(my_list[[8]])
 # Extract variables name
 noms <- as.character(dt_values[2])
