@@ -4,9 +4,10 @@ library(ggrepel)
 library(ggdark)
 library(readxl)
 library(ggthemes)
+library(janitor)
 
 # Create a list of all the excel files
-my_dir <- "data/"
+my_dir <- "data"
 file_list <- paste(my_dir, list.files(path = my_dir, pattern = "*.xlsx"), sep = "/")
 
 # Read the files in one list
@@ -15,39 +16,61 @@ my_list <- lapply(file_list, read_excel)
 # Generate a vector of the names of each dataframe in the generated list
 # Most of the names are displayed in the first row & first column of the dataframe
 
-df_names <- unlist(sapply(my_list, function(elem) elem[1, 1])) %>% tbl_df()
+df_names <- unlist(lapply(my_list, function(elem) elem[1, 1])) %>% tbl_df()
 
 names(my_list) <- df_names$value
+
+# Spot prices ($/b)
+# Load spot prices dt 
+dt_prices <- as.data.table(my_list[[1]])
+# Remove empty columns (6 & 7)
+dt_prices <- dt_prices[, !c(6:7)]
+# Extract variables name
+prices_nom <- as.character(dt_prices[1, ])
+prices_nom[1] <- 'year'
+# Set variables name
+names(dt_prices) <- prices_nom %>% make_clean_names()
+# remove rows 1 to 4
+dt_prices <- dt_prices[5:51
+                       ][, 'year' := as.integer(year) 
+                       ][, lapply(.SD, as.numeric), .SDcols = 2:5, by = year
+                         ][, lapply(.SD, round, 2), .SDcols = 2:5, by = year]
+
  
 # OPEC Members' values of petroleum exports (m $)
-df_values <- my_list[[8]]
-setDT(df_values)
-noms <- as.character(df_values[2])
+dt_values <- as.data.table(my_list[[8]])
+# Extract variables name
+noms <- as.character(dt_values[2])
 noms[1] <- 'country'
-names(df_values) <- noms
-df_values <- df_values[3:16]
-df_values <- melt.data.table(df_values, id.vars = "country", measure.vars = 2:ncol(df_values),
+names(dt_values) <- noms
+# Remove empty rows
+dt_values <- dt_values[3:16]
+# Melt the year variable
+dt_values <- melt.data.table(dt_values, id.vars = "country", measure.vars = 2:ncol(dt_values),
                             variable.name = "year", value.name = "petroleum_exp", value.factor = FALSE)
-df_values <- df_values[, c("year", "petroleum_exp") := 
+dt_values <- dt_values[, c("year", "petroleum_exp") := 
                          .(as.integer(as.character(year)), round(as.numeric(petroleum_exp), 2))]
 
-df_values[country %like% "Algeria"] %>% 
+dt_values[country %like% "Algeria"] %>% 
   ggplot() +
   aes(year, petroleum_exp/1000, color = country) +
   geom_line(size = 1, color = "red") +
   geom_point(color = "black", alpha = .5) +
-  geom_line(data = df_values[, median(petroleum_exp/1000, na.rm = TRUE), by = year],
+  geom_line(data = dt_values[, median(petroleum_exp/1000, na.rm = TRUE), by = year],
             mapping = aes(x = year, V1), color = "black", alpha = .5, size = 1, linetype = "dashed") +
-  geom_label_repel(data = df_values[year == 2017 & country %like% "Algeria"], 
+  geom_line(data = dt_prices[, .(year, brent)],
+            mapping = aes(x = year, y = brent), color = "blue", alpha = .5, size = 1) +
+  geom_label_repel(data = dt_values[year == 2017 & country %like% "Algeria"], 
                    mapping =  aes(x = 2018, y = petroleum_exp/1000, label = "Algeria"),
                    hjust = -.5, color = "red", face = "bold") +
-  geom_label_repel(data = df_values[year == 2017, .("opec_median" = median(petroleum_exp/1000, na.rm = TRUE))], 
+  geom_label_repel(data = dt_values[year == 2017, .("opec_median" = median(petroleum_exp/1000, na.rm = TRUE))], 
                    mapping =  aes(x = 2018, y = opec_median, label = "OPEC_median"),
                    hjust = -.5, color = "gray50", face = "bold") +
   scale_x_continuous(limits = c(1990, 2018), breaks = seq(1990, 2018, 3)) +
-  scale_y_continuous(limits = c(0, 80), breaks = seq(0, 80, 10)) +
+  scale_y_continuous(limits = c(0, 120), breaks = seq(0, 120, 10)) +
   labs(
     title = "Values of petroleum exports (billion U.S. dollars)",
+    subtitle = 'Evolution of the brent price in blue line',
     x = "",
     y = "",
     caption = "Source : © 2019 Organization of the Petroleum Exporting Countries"
@@ -58,23 +81,23 @@ df_values[country %like% "Algeria"] %>%
 ggsave(filename = "values_of_petroleum_exports.png", path = "figs/", width = 12, height = 6, dpi = 300)
 
 #  Active rigs by country
-df_rigs <- as.data.table(my_list[[12]])
-noms <- as.character(df_rigs[2, ])
-names(df_rigs) <- noms
+dt_rigs <- as.data.table(my_list[[12]])
+noms <- as.character(dt_rigs[2, ])
+names(dt_rigs) <- noms
 
-df_rigs <- melt.data.table(df_rigs[3:52], id.vars = c("country", "region"), measure.vars = 3:38,
+dt_rigs <- melt.data.table(dt_rigs[3:52], id.vars = c("country", "region"), measure.vars = 3:38,
                            variable.name = "year", value.name = "number_rigs", variable.factor = FALSE)
-df_rigs <- df_rigs[, c("year", "number_rigs") := .(as.integer(year), as.integer(number_rigs))]
+dt_rigs <- dt_rigs[, c("year", "number_rigs") := .(as.integer(year), as.integer(number_rigs))]
 
 zoom_country <- c("United States", "China1", "Canada", "Russia", "Saudi Arabia")
-df_rigs[country %in% zoom_country] %>% 
+dt_rigs[country %in% zoom_country] %>% 
   ggplot() +
   aes(year, number_rigs, color = country) +
   geom_line(size = 1) +
   scale_x_continuous(limits = c(1990, 2018), breaks = seq(1990, 2018, 3)) +
   scale_y_continuous(limits = c(0, 2100), breaks = seq(0, 2100, 300)) +
   # scale_y_sqrt() +
-  geom_label_repel(data = df_rigs[year == 2017 & country %in% zoom_country], 
+  geom_label_repel(data = dt_rigs[year == 2017 & country %in% zoom_country], 
                    mapping =  aes(x = 2018, y = number_rigs, label = country),
                    hjust = -.5, face = "bold") +
   labs(
@@ -97,3 +120,4 @@ df_rigs[country %in% zoom_country] %>%
         legend.position = "none")
 
 ggsave(filename = "active_rigs.png", path = "figs/", width = 12, height = 6, dpi = 300)
+
