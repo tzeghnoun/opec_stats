@@ -162,34 +162,88 @@ dt_world_product_exp_country <- as.data.table(my_list[[31]])
 dt_world_product_exp_product_region <- as.data.table(my_list[[32]])
 
 # 33	Table 5.6: World exports of crude oil and petroleum products by country (1,000 b/d)
-# 34	Table 5.7: World imports of crude oil by country (1,000 b/d)
-# 35	Table 5.8: World imports of petroleum products by country (1,000 b/d)
-# 36	Table 5.9: World imports of petroleum products by main petroleum product and region (1,000 b/d)
-# 37	Table 6.1: World tanker fleet by year of build and categories (1,000 dwt)
-# 38	Table 6.2: World LPG carrier fleet by size (1,000 cu m)
-# 39	Table 6.3: World combined carrier fleet by size (1,000 dwt)
-# 40	Table 6.4: Average spot freight rates by vessel category (% of Worldscale)
-# 41	Table 6.5: Dirty tanker spot freight rates (% of Worldscale and $/t)
-# 42	Table 6.6: Clean tanker spot freight rates (% of Worldscale and $/t)
-# 43	Table 7.1: OPEC Reference Basket (ORB) and corresponding components spot prices ($/b)
-# 44	Table 7.2: Selected spot crude oil prices ($/b)
-# 45	Table 7.3: ICE Brent, NYMEX WTI and DME Oman annual average of the  1st, 6th and 12th forward months ($/b)
-# 46	Table 7.4: OPEC Reference Basket in nominal and real terms ($/b)
-# 47	Table 7.5: Annual average of premium factors for selected OPEC Reference Basket components ($/b)
-# 48	Table 7.6: Spot prices of petroleum products in major markets  ($/b)
-# 49	Table 7.7: Retail prices of petroleum products in OPEC Members  (units of national currency/b)
-# 50	Table 7.8: Crack spread in major markets ($/b)
-# 51	Table 8.1: Composite barrel and its components in major OECD oil consuming countries ($/b)
-# 52	Table 8.2: Tax to CIF crude oil price ratio in major OECD oil consuming countries (ratio)
-# 53	Table 8.3: Euro Big 4 household energy prices, 2017 (USD/toe NCV)
-# 54	Table 9.1: World proven natural gas reserves by country (bn standard cu m)
-# 55	Table 9.2: Natural gas marketed production in OPEC Members (million standard cu m)
-# 56	Table 9.3: World marketed production of natural gas by country (million standard cu m)
-# 57	Table 9.4: World natural gas exports by country (m standard cu m)
-# 58	Table 9.5: World natural gas imports by country (m standard cu m)
-# 59	Table 9.6: World  natural gas demand by country (m standard cu m)
-# 60	Table 9.7: World LNG carrier fleet by size and type (1,000 cu m)
+dt_world_exp_oil_prod_country <- as.data.table(my_list[[33]])
 
+# 34	Table 5.7: World imports of crude oil by country (1,000 b/d)
+dt_world_imp_oil_country <- as.data.table(my_list[[34]]) 
+
+# 35	Table 5.8: World imports of petroleum products by country (1,000 b/d)
+dt_world_imp_products_country <- as.data.table(my_list[[35]])
+
+# 36	Table 5.9: World imports of petroleum products by main petroleum product and region (1,000 b/d)
+dt_world_product_imp_region <- as.data.table(my_list[[36]])
+
+# 37	Table 6.1: World tanker fleet by year of build and categories (1,000 dwt)
+dt_world_tanker_year_category <- as.data.table(my_list[[37]])
+
+# 38	Table 6.2: World LPG carrier fleet by size (1,000 cu m)
+dt_world_lpg_fleet <- as.data.table(my_list[[38]])
+
+# 39	Table 6.3: World combined carrier fleet by size (1,000 dwt)
+dt_world_fleet_size <- as.data.table(my_list[[39]])
+
+# 40	Table 6.4: Average spot freight rates by vessel category (% of Worldscale)
+dt_freight_category <- as.data.table(my_list[[40]])
+
+# 41	Table 6.5: Dirty tanker spot freight rates (% of Worldscale and $/t)
+dt_dirty_tanker_freight_rate <- as.data.table(my_list[[41]])
+
+# 42	Table 6.6: Clean tanker spot freight rates (% of Worldscale and $/t)
+dt_clean_tanker_freight_rate <- as.data.table(my_list[[42]])
+
+# 43	Table 7.1: OPEC Reference Basket (ORB) and corresponding components spot prices ($/b)
+dt_opec_price_co <- as.data.table(my_list[[43]])
+
+# 44	Table 7.2: Selected spot crude oil prices ($/b)
+dt_selected_spot_prices <- as.data.table(my_list[[44]])
+
+# 45	Table 7.3: ICE Brent, NYMEX WTI and DME Oman annual average of the  1st, 6th and 12th forward months ($/b)
+dt_brent_wti <- as.data.table(my_list[[45]])
+
+# 46	Table 7.4: OPEC Reference Basket in nominal and real terms ($/b)
+dt_opec_price_nominal_real <- as.data.table(my_list[[46]])
+
+# 47	Table 7.5: Annual average of premium factors for selected OPEC Reference Basket components ($/b)
+dt_annual_avg_selected_opec_price <- as.data.table(my_list[[47]])
+
+# 48	Table 7.6: Spot prices of petroleum products in major markets  ($/b)
+dt_srices_products <- as.data.table(my_list[[48]])
+
+# 49	Table 7.7: Retail prices of petroleum products in OPEC Members  (units of national currency/b)
+dt_retail_price_product_opec <- as.data.table(my_list[[49]])
+
+# 50	Table 7.8: Crack spread in major markets ($/b)
+dt_crack_spread <- as.data.table(my_list[[50]])
+
+# 51	Table 8.1: Composite barrel and its components in major OECD oil consuming countries ($/b)
+dt_composite_barrel_oecd <- as.data.table(my_list[[51]])
+
+# 52	Table 8.2: Tax to CIF crude oil price ratio in major OECD oil consuming countries (ratio)
+dt_tax_cif_oecd <- as.data.table(my_list[[52]])
+
+# 53	Table 8.3: Euro Big 4 household energy prices, 2017 (USD/toe NCV)
+dt_euro_big4_household <- as.data.table(my_list[[53]])
+
+# 54	Table 9.1: World proven natural gas reserves by country (bn standard cu m)
+dt_proven_ngas_reserves <- as.data.table(my_list[[54]])
+
+# 55	Table 9.2: Natural gas marketed production in OPEC Members (million standard cu m)
+dt_ngas_marketed_prod_opec <- as.data.table(my_list[[55]])
+
+# 56	Table 9.3: World marketed production of natural gas by country (million standard cu m)
+dt_world_ngas_marketed_prod <- as.data.table(my_list[[56]])
+
+# 57	Table 9.4: World natural gas exports by country (m standard cu m)
+dt_world_ngas_exports_country <- as.data.table(my_list[[57]])
+
+# 58	Table 9.5: World natural gas imports by country (m standard cu m)
+dt_world_ngas_imports_country <- as.data.table(my_list[[58]])
+
+# 59	Table 9.6: World  natural gas demand by country (m standard cu m)
+dt_world_ngas_demand_country <- as.data.table(my_list[[59]])
+
+# 60	Table 9.7: World LNG carrier fleet by size and type (1,000 cu m)
+dt_world_lng_fleet_size_type <- as.data.table(my_list[[60]])
 
 
 
