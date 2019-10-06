@@ -20,7 +20,7 @@ df_names <- unlist(lapply(my_list, function(elem) elem[1, 1])) %>% tbl_df()
 
 names(my_list) <- df_names$value
 
-# Spot prices ($/b)
+# 1 Table : Spot prices ($/b)
 # Load spot prices dt 
 dt_prices <- as.data.table(my_list[[1]])
 # Remove empty columns (6 & 7)
@@ -36,7 +36,7 @@ dt_prices <- dt_prices[5:51
                        ][, lapply(.SD, as.numeric), .SDcols = 2:5, by = year
                          ][, lapply(.SD, round, 2), .SDcols = 2:5, by = year]
 
-# Table 1.1: OPEC Members' facts and figures, 2017
+# 2  Table 1.1: OPEC Members' facts and figures, 2017
 dt_facts <- as.data.table(my_list[[2]])
 # Extract variables name
 noms <- as.character(dt_facts[2])
@@ -54,22 +54,22 @@ dt_facts <- dt_facts[, lapply(.SD, as.numeric), .SDcols=2:ncol(dt_facts), by = c
 
 
 
-# Table 1.2: OPEC Members' crude oil production allocations (1,000 b/d)
+# 3  Table 1.2: OPEC Members' crude oil production allocations (1,000 b/d)
 dt_oil_prod <- as.data.table(my_list[[3]])
 
-# Table 2.1: OPEC Members' population (million inhabitants)
+# 4  Table 2.1: OPEC Members' population (million inhabitants)
 dt_population <- as.data.table(my_list[[4]])
 
-# Table 2.2: OPEC Members' GDP at current market prices (m $)
+# 5  Table 2.2: OPEC Members' GDP at current market prices (m $)
 dgp_current_price <- as.data.table(my_list[[5]])
 
-# Table 2.3: OPEC Members real GDP growth rates PPP based weights (%)
+# 6  Table 2.3: OPEC Members real GDP growth rates PPP based weights (%)
 gdp_growth <- as.data.table(my_list[[6]])
 
-# Table 2.4: OPEC Members' values of exports (m $)
+# 7  Table 2.4: OPEC Members' values of exports (m $)
 dt_values_exp <- as.data.table(my_list[[7]])
 
-# Table 2.5:OPEC Members' values of petroleum exports (m $)
+# 8  Table 2.5:OPEC Members' values of petroleum exports (m $)
 dt_values <- as.data.table(my_list[[8]])
 # Extract variables name
 noms <- as.character(dt_values[2])
@@ -83,6 +83,118 @@ dt_values <- melt.data.table(dt_values, id.vars = "country", measure.vars = 2:nc
 dt_values <- dt_values[, c("year", "petroleum_exp") := 
                          .(as.integer(as.character(year)), round(as.numeric(petroleum_exp), 2))]
 
+# 9  Table 2.6: OPEC Members' values of imports (m $)
+dt_values_imp <- as.data.table(my_list[[9]])
+
+# 10  Table 2.7: Current account balances in OPEC Members (m $)
+dt_current_balance <- as.data.table(my_list[[10]])
+
+# 11  Table 3.1: World proven crude oil reserves by country (m b)
+dt_world_oil_reserves <- as.data.table(my_list[[11]])
+
+#  12  Table 3.2: Active rigs by country
+dt_rigs <- as.data.table(my_list[[12]])
+noms <- as.character(dt_rigs[2, ])
+names(dt_rigs) <- noms
+
+dt_rigs <- melt.data.table(dt_rigs[3:52], id.vars = c("country", "region"), measure.vars = 3:38,
+                           variable.name = "year", value.name = "number_rigs", variable.factor = FALSE)
+dt_rigs <- dt_rigs[, c("year", "number_rigs") := .(as.integer(year), as.integer(number_rigs))]
+
+# 13  Table 3.3: Wells completed  in OPEC Members
+dt_wells_completed <- as.data.table(my_list[[13]])
+
+# 14  Table 3.4: Producing wells in OPEC Members
+dt_producing_wells <- as.data.table(my_list[[14]])
+
+# 15  Table 3.5: Daily and cumulative crude oil production in OPEC Members (1,000 b)
+dt_daily_cumul_oil_prod <- as.data.table(my_list[[15]])
+
+# 16  Table 3.6: World crude oil production by country (1,000 b/d)
+dt_world_oil_prod <- as.data.table(my_list[[16]])
+
+# 17	Table 3.7: Non-OPEC oil supply and OPEC NGLs (1,000 b/d)
+dt_nonopec_opecngls <- as.data.table(my_list[[17]])
+
+# 18	Table 4.1: Refinery capacity in OPEC Members by company and location (1,000 b/cd)
+dt_opec_ref_cap <- as.data.table(my_list[[18]])
+
+# 19	Table 4.2: Charge refinery capacity in OPEC Members, 2017 (1,000 b/cd)
+dt_opec_ref_charge <- as.data.table(my_list[[19]])
+
+# 20	Table 4.3: World refinery capacity by country (1,000 b/cd)
+dt_world_ref_cap <- as.data.table(my_list[[20]])
+
+# 21	Table 4.4: World refinery throughput by country (1,000 b/d)
+dt_world_ref_thr <- as.data.table(my_list[[21]])
+
+# 22	Table 4.5: Output of petroleum products in OPEC Members (1,000 b/d)
+dt_opec_output_products <- as.data.table(my_list[[22]])
+
+# 23	Table 4.6: World output of petroleum products by country (1,000 b/d)
+dt_world_output_products <- as.data.table(my_list[[23]])
+
+# 24	Table 4.7: Oil demand by main petroleum product in OPEC Members (1,000 b/d)
+dt_opec_oil_dm_product <- as.data.table(my_list[[24]])
+
+# 25	Table 4.8: World oil demand by country (1,000 b/d)
+dt_world_oil_dm_country <- as.data.table(my_list[[25]])
+
+# 26	Table 4.9: World oil demand by main petroleum product and region (1,000 b/d)
+dt_world_dm_product_region <- as.data.table(my_list[[26]])
+
+# 27	Table 5.1: OPEC Members' crude oil exports by destination (1,000 b/d)
+dt_opec_oil_exp_destination <- as.data.table(my_list[[27]])
+
+# 28	Table 5.10: World imports of crude oil and petroleum products by country (1,000 b/d)
+dt_world_imp_products_country <- as.data.table(my_list[[28]])
+
+# 29	Table 5.2: OPEC Members' petroleum product exports by destination (1,000 b/d)
+dt_opec_product_exp_destination <- as.data.table(my_list[[29]])
+
+# 30	Table 5.3: World crude oil exports by country (1,000 b/d)
+dt_world_oil_exp_country <- as.data.table(my_list[[30]])
+
+# 31	Table 5.4: World exports of petroleum products by country (1,000 b/d)
+dt_world_product_exp_country <- as.data.table(my_list[[31]])
+
+# 32	Table 5.5: World exports of petroleum products by main petroleum product and region (1,000 b/d)
+dt_world_product_exp_product_region <- as.data.table(my_list[[32]])
+
+# 33	Table 5.6: World exports of crude oil and petroleum products by country (1,000 b/d)
+# 34	Table 5.7: World imports of crude oil by country (1,000 b/d)
+# 35	Table 5.8: World imports of petroleum products by country (1,000 b/d)
+# 36	Table 5.9: World imports of petroleum products by main petroleum product and region (1,000 b/d)
+# 37	Table 6.1: World tanker fleet by year of build and categories (1,000 dwt)
+# 38	Table 6.2: World LPG carrier fleet by size (1,000 cu m)
+# 39	Table 6.3: World combined carrier fleet by size (1,000 dwt)
+# 40	Table 6.4: Average spot freight rates by vessel category (% of Worldscale)
+# 41	Table 6.5: Dirty tanker spot freight rates (% of Worldscale and $/t)
+# 42	Table 6.6: Clean tanker spot freight rates (% of Worldscale and $/t)
+# 43	Table 7.1: OPEC Reference Basket (ORB) and corresponding components spot prices ($/b)
+# 44	Table 7.2: Selected spot crude oil prices ($/b)
+# 45	Table 7.3: ICE Brent, NYMEX WTI and DME Oman annual average of the  1st, 6th and 12th forward months ($/b)
+# 46	Table 7.4: OPEC Reference Basket in nominal and real terms ($/b)
+# 47	Table 7.5: Annual average of premium factors for selected OPEC Reference Basket components ($/b)
+# 48	Table 7.6: Spot prices of petroleum products in major markets  ($/b)
+# 49	Table 7.7: Retail prices of petroleum products in OPEC Members  (units of national currency/b)
+# 50	Table 7.8: Crack spread in major markets ($/b)
+# 51	Table 8.1: Composite barrel and its components in major OECD oil consuming countries ($/b)
+# 52	Table 8.2: Tax to CIF crude oil price ratio in major OECD oil consuming countries (ratio)
+# 53	Table 8.3: Euro Big 4 household energy prices, 2017 (USD/toe NCV)
+# 54	Table 9.1: World proven natural gas reserves by country (bn standard cu m)
+# 55	Table 9.2: Natural gas marketed production in OPEC Members (million standard cu m)
+# 56	Table 9.3: World marketed production of natural gas by country (million standard cu m)
+# 57	Table 9.4: World natural gas exports by country (m standard cu m)
+# 58	Table 9.5: World natural gas imports by country (m standard cu m)
+# 59	Table 9.6: World  natural gas demand by country (m standard cu m)
+# 60	Table 9.7: World LNG carrier fleet by size and type (1,000 cu m)
+
+
+
+
+# Plotting
+# Plot 1
 dt_values[country %like% "Algeria"] %>% 
   ggplot() +
   aes(year, petroleum_exp/1000, color = country) +
@@ -112,17 +224,8 @@ dt_values[country %like% "Algeria"] %>%
 
 ggsave(filename = "values_of_petroleum_exports.png", path = "figs/", width = 12, height = 6, dpi = 300)
 
-#  Active rigs by country
-dt_rigs <- as.data.table(my_list[[12]])
-noms <- as.character(dt_rigs[2, ])
-names(dt_rigs) <- noms
-
-dt_rigs <- melt.data.table(dt_rigs[3:52], id.vars = c("country", "region"), measure.vars = 3:38,
-                           variable.name = "year", value.name = "number_rigs", variable.factor = FALSE)
-dt_rigs <- dt_rigs[, c("year", "number_rigs") := .(as.integer(year), as.integer(number_rigs))]
-
-zoom_country <- c("United States", "China1", "Canada", "Russia", "Saudi Arabia")
-dt_rigs[country %in% zoom_country] %>% 
+# Plot 2
+dt_rigs[country %in% c('USA', 'Russia')] %>% 
   ggplot() +
   aes(year, number_rigs, color = country) +
   geom_line(size = 1) +
