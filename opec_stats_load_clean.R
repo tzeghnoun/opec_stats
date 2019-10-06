@@ -6,6 +6,23 @@ library(readxl)
 library(ggthemes)
 library(janitor)
 
+# Create function to extract names, remove empty rows, melt & tranform variables class
+# EXtract & allocate name to variables
+extract_to_tranform <- function(my_dt, first = 3, ends = 16) {
+  noms <- as.character(my_dt[2])
+  noms[1] <- 'country'
+  names(my_dt) <- noms
+  # Remove empty rows
+  my_dt <- my_dt[first:ends]
+  # Melting the year variable
+  my_dt <- melt.data.table(my_dt, id.vars = 1, 
+                                   measure.vars = 2:ncol(my_dt), variable.name = 'year')
+  # Tranform variable class
+  my_dt <- my_dt[, c('year', 'value') := .(as.integer(as.character(year)),
+                                                           as.numeric(value))]
+}
+
+
 # Create a list of all the excel files
 my_dir <- "data"
 file_list <- paste(my_dir, list.files(path = my_dir, pattern = "*.xlsx"), sep = "/")
@@ -52,16 +69,27 @@ dt_facts <- dcast.data.table(dt_facts, country ~ variables)
 names(dt_facts) <- names(dt_facts) %>% make_clean_names()
 dt_facts <- dt_facts[, lapply(.SD, as.numeric), .SDcols=2:ncol(dt_facts), by = country]
 
-
-
 # 3  Table 1.2: OPEC Members' crude oil production allocations (1,000 b/d)
 dt_oil_prod <- as.data.table(my_list[[3]])
+dt_oil_prod <- dt_oil_prod[, !(2)]
+# Extracting names
+noms <- as.character(dt_oil_prod[2])
+noms[1] <- 'country'
+names(dt_oil_prod) <- noms
+#Removing empty rows
+dt_oil_prod <- dt_oil_prod[4:17]
+# TODO fixing the date
+x <- str_split(noms, '\r\n')
+lapply(x, parse_date_time, "%m%y")
 
 # 4  Table 2.1: OPEC Members' population (million inhabitants)
 dt_population <- as.data.table(my_list[[4]])
+# Clean DT using the function
+dt_population <- extract_to_tranform(dt_population)
 
 # 5  Table 2.2: OPEC Members' GDP at current market prices (m $)
-dgp_current_price <- as.data.table(my_list[[5]])
+dt_gdp_current_price <- as.data.table(my_list[[5]])
+
 
 # 6  Table 2.3: OPEC Members real GDP growth rates PPP based weights (%)
 gdp_growth <- as.data.table(my_list[[6]])
