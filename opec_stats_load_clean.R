@@ -136,6 +136,7 @@ dt_world_oil_reserves <- as.data.table(my_list[[11]])
 dt_rigs <- as.data.table(my_list[[12]])
 noms <- as.character(dt_rigs[2, ])
 names(dt_rigs) <- noms
+#*****FIX THE OTHERS ROWS NAME BEFORE MELTING
 
 dt_rigs <- melt.data.table(dt_rigs[3:52], id.vars = c("country", "region"), measure.vars = 3:38,
                            variable.name = "year", value.name = "number_rigs", variable.factor = FALSE)
@@ -144,22 +145,30 @@ dt_rigs <- dt_rigs[, c("year", "number_rigs") := .(as.integer(year), as.integer(
 ###################################################################
 # 13  Table 3.3: Wells completed  in OPEC Members
 dt_wells_completed <- as.data.table(my_list[[13]])
+# Clean DT using the function
+dt_wells_completed <- extract_to_tranform(dt_wells_completed, ends = 18)
 
 ###################################################################
 # 14  Table 3.4: Producing wells in OPEC Members
 dt_producing_wells <- as.data.table(my_list[[14]])
+# Clean DT using the function
+dt_producing_wells <- extract_to_tranform(dt_producing_wells, ends = 18)
 
 ###################################################################
 # 15  Table 3.5: Daily and cumulative crude oil production in OPEC Members (1,000 b)
 dt_daily_cumul_oil_prod <- as.data.table(my_list[[15]])
+# Clean DT using the function
+dt_daily_cumul_oil_prod <- extract_to_tranform(dt_daily_cumul_oil_prod)
 
 ###################################################################
 # 16  Table 3.6: World crude oil production by country (1,000 b/d)
 dt_world_oil_prod <- as.data.table(my_list[[16]])
+#*********FIX OTHERS ROW NAMES
 
 ###################################################################
 # 17	Table 3.7: Non-OPEC oil supply and OPEC NGLs (1,000 b/d)
 dt_nonopec_opecngls <- as.data.table(my_list[[17]])
+#*********FIX OTHERS ROW NAMES
 
 ###################################################################
 # 18	Table 4.1: Refinery capacity in OPEC Members by company and location (1,000 b/cd)
